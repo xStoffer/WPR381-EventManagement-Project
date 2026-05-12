@@ -11,6 +11,7 @@ require('./models/Enquiry');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
+const enquiryRoutes = require('./routes/enquiryRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(session({
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/', enquiryRoutes);
 
 // Test route
 app.get('/', (req, res) => {
