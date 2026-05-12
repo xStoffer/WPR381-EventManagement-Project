@@ -2,10 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 require('dotenv').config();
+
+//Import Models
 require('./models/User');
 require('./models/Event');
 require('./models/Booking');
 require('./models/Enquiry');
+
+// Import routes
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -20,6 +25,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+// Routes
+app.use('/auth', authRoutes);
 
 // Test route
 app.get('/', (req, res) => {
