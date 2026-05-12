@@ -2,6 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 require('dotenv').config();
+require('./models/User');
+require('./models/Event');
+require('./models/Booking');
+require('./models/Enquiry');
 
 const app = express();
 
