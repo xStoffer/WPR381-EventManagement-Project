@@ -14,7 +14,10 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+
 module.exports = {
   requireLogin,
-  requireAdmin
+  requireAdmin,
+  isLoggedIn: requireLogin,
+  isAdmin: requireAdmin
 };

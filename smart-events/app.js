@@ -32,9 +32,9 @@ app.use('/auth', authRoutes);
 app.use('/', enquiryRoutes);
 
 // Test route
-app.get('/', (req, res) => {
-  res.send('Server is running!');
-});
+// app.get('/', (req, res) => {
+//   res.send('Server is running!');
+// });
 
 // Database connection + server start
 mongoose.connect(process.env.MONGO_URI)
