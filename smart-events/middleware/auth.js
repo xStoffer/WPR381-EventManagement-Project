@@ -10,10 +10,12 @@ const requireLogin = (req, res, next) => {
 
 // Middleware to check if user is admin
 const requireAdmin = (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== 'admin') {
-    return res.status(403).send('Access denied');
+  if (!req.session.user) {
+    return res.redirect('/auth/login');
   }
-
+  if (req.session.user.role !== 'admin') {
+    return res.redirect('/?error=You do not have permission to access that page');
+  }
   next();
 };
 

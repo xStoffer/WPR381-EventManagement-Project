@@ -26,7 +26,8 @@ const getAllEvents = async (req, res) => {
       user: req.session.user || null,
       search: search || '',
       category: category || '',
-      available: available || ''
+      available: available || '',
+      error: req.query.error || null
     });
 
   } catch (err) {
@@ -61,8 +62,8 @@ const getAdminEvents = async (req, res) => {
     res.render('admin-events', {
       events,
       user: req.session.user || null,
-      error: null,
-      success: null
+      error: req.query.error || null,  
+      success: req.query.success || null 
     });
   } catch (err) {
     console.error(err);

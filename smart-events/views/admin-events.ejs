@@ -3,11 +3,11 @@
 <div class="container mt-4">
   <h2 class="fw-bold mb-4">Manage Events</h2>
 
-  <% if (req.query && req.query.success) { %>
-    <div class="alert alert-success"><%= req.query.success %></div>
+  <% if (success) { %>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
-  <% if (req.query && req.query.error) { %>
-    <div class="alert alert-danger"><%= req.query.error %></div>
+  <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
   <!-- Create Event Form -->
@@ -107,6 +107,7 @@
                   </button>
                   <!-- Delete -->
                   <form action="/admin/events/delete/<%= event._id %>" method="POST" style="display:inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="btn btn-sm btn-danger"
                       onclick="return confirm('Delete this event?')">
                       <i class="bi bi-trash"></i>
@@ -125,6 +126,7 @@
                     </div>
                     <div class="modal-body">
                       <form action="/admin/events/update/<%= event._id %>" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <div class="row g-3">
                           <div class="col-md-6">
                             <label class="form-label">Title</label>
