@@ -12,6 +12,8 @@ require('./models/Enquiry');
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const enquiryRoutes = require('./routes/enquiryRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 
@@ -30,6 +32,8 @@ app.use(session({
 // Routes
 app.use('/auth', authRoutes);
 app.use('/', enquiryRoutes);
+app.use('/', eventRoutes);
+app.use('/', bookingRoutes);
 
 // Test route
 // app.get('/', (req, res) => {
