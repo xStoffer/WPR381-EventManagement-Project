@@ -1,0 +1,104 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+  <h2 class="fw-bold mb-1">Admin Dashboard</h2>
+  <p class="text-muted mb-4">Platform overview and analytics</p>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center p-3">
+        <i class="bi bi-ticket-perforated text-primary" style="font-size:2.5rem;"></i>
+        <h2 class="fw-bold mt-2"><%= totalBookings %></h2>
+        <p class="text-muted mb-0">Total Bookings</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center p-3">
+        <i class="bi bi-calendar-event text-success" style="font-size:2.5rem;"></i>
+        <h2 class="fw-bold mt-2"><%= totalEvents %></h2>
+        <p class="text-muted mb-0">Total Events</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center p-3">
+        <i class="bi bi-people text-warning" style="font-size:2.5rem;"></i>
+        <h2 class="fw-bold mt-2"><%= popularEvents.length %></h2>
+        <p class="text-muted mb-0">Active Event Types</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Events -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white">
+      <h5 class="mb-0 fw-bold">
+        <i class="bi bi-fire text-danger"></i> Most Popular Events
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th>Rank</th>
+            <th>Event</th>
+            <th>Category</th>
+            <th>Tickets Sold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (popularEvents.length === 0) { %>
+            <tr>
+              <td colspan="4" class="text-center py-4 text-muted">No bookings yet</td>
+            </tr>
+          <% } else { %>
+            <% popularEvents.forEach((item, index) => { %>
+              <tr>
+                <td><strong>#<%= index + 1 %></strong></td>
+                <td><%= item.event.title %></td>
+                <td><span class="badge bg-primary"><%= item.event.category %></span></td>
+                <td><%= item.count %></td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Capacity Usage -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white">
+      <h5 class="mb-0 fw-bold">
+        <i class="bi bi-bar-chart"></i> Capacity Usage
+      </h5>
+    </div>
+    <div class="card-body">
+      <% if (events.length === 0) { %>
+        <p class="text-muted text-center py-3">No events found</p>
+      <% } else { %>
+        <% events.forEach(event => { %>
+          <%
+            const sold = event.capacity - event.ticketsAvailable;
+            const percentage = Math.round((sold / event.capacity) * 100);
+          %>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fw-semibold"><%= event.title %></span>
+              <span class="text-muted"><%= sold %>/<%= event.capacity %> tickets sold</span>
+            </div>
+            <div class="progress" style="height:10px;">
+              <div
+                class="progress-bar <%= percentage > 80 ? 'bg-danger' : percentage > 50 ? 'bg-warning' : 'bg-success' %>"
+                style="width:<%= percentage %>%"
+              ></div>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+</div>
+
+<%- include('partials/footer') %>

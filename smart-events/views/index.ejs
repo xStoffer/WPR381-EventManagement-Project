@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+
+  <!-- Page Title -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold">Upcoming Events</h2>
+      <p class="text-muted">Browse and book tickets for events near you</p>
+    </div>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body">
+      <form action="/" method="GET" class="row g-3">
+        <div class="col-md-5">
+          <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search events..."
+            value="<%= search %>"
+          >
+        </div>
+        <div class="col-md-3">
+          <select name="category" class="form-select">
+            <option value="">All Categories</option>
+            <option value="conference" <%= category === 'conference' ? 'selected' : '' %>>Conference</option>
+            <option value="workshop" <%= category === 'workshop' ? 'selected' : '' %>>Workshop</option>
+            <option value="festival" <%= category === 'festival' ? 'selected' : '' %>>Festival</option>
+            <option value="private" <%= category === 'private' ? 'selected' : '' %>>Private</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <select name="available" class="form-select">
+            <option value="">All Events</option>
+            <option value="true" <%= available === 'true' ? 'selected' : '' %>>Available Only</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Cards -->
+  <div class="row g-4">
+    <% if (events.length === 0) { %>
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-calendar-x" style="font-size:3rem; color:#aaa;"></i>
+        <h4 class="mt-3 text-muted">No events found</h4>
+        <p class="text-muted">Try adjusting your search or filters</p>
+        <a href="/" class="btn btn-outline-primary">Clear Filters</a>
+      </div>
+    <% } else { %>
+      <% events.forEach(event => { %>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2"><%= event.category %></span>
+              <h5 class="card-title fw-bold"><%= event.title %></h5>
+              <p class="text-muted mb-1">
+                <i class="bi bi-calendar3"></i>
+                <%= new Date(event.date).toLocaleDateString('en-ZA', { dateStyle: 'medium' }) %>
+              </p>
+              <p class="text-muted mb-1">
+                <i class="bi bi-geo-alt"></i> <%= event.location %>
+              </p>
+              <p class="mb-2">
+                <% if (event.ticketsAvailable > 0) { %>
+                  <span class="text-success fw-semibold">
+                    <i class="bi bi-ticket"></i> <%= event.ticketsAvailable %> tickets available
+                  </span>
+                <% } else { %>
+                  <span class="text-danger fw-semibold">
+                    <i class="bi bi-x-circle"></i> Sold Out
+                  </span>
+                <% } %>
+              </p>
+              <p class="card-text text-muted" style="font-size:0.9rem;">
+                <%= event.description.substring(0, 100) %>...
+              </p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="/events/<%= event._id %>" class="btn btn-primary w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+</div>
+
+<%- include('partials/footer') %>

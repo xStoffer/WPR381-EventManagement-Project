@@ -1,0 +1,175 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+  <h2 class="fw-bold mb-4">Manage Events</h2>
+
+  <% if (req.query && req.query.success) { %>
+    <div class="alert alert-success"><%= req.query.success %></div>
+  <% } %>
+  <% if (req.query && req.query.error) { %>
+    <div class="alert alert-danger"><%= req.query.error %></div>
+  <% } %>
+
+  <!-- Create Event Form -->
+  <div class="card border-0 shadow-sm mb-5">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Create New Event</h5>
+    </div>
+    <div class="card-body">
+      <form action="/admin/events/create" method="POST">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Date</label>
+            <input type="datetime-local" name="date" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select" required>
+              <option value="conference">Conference</option>
+              <option value="workshop">Workshop</option>
+              <option value="festival">Festival</option>
+              <option value="private">Private</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Capacity</label>
+            <input type="number" name="capacity" class="form-control" min="1" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-plus-circle"></i> Create Event
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Events Table -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white">
+      <h5 class="mb-0 fw-bold">All Events</h5>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Capacity</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (events.length === 0) { %>
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">No events yet</td>
+            </tr>
+          <% } else { %>
+            <% events.forEach(event => { %>
+              <tr>
+                <td><%= event.title %></td>
+                <td><%= new Date(event.date).toLocaleDateString('en-ZA') %></td>
+                <td><%= event.location %></td>
+                <td><span class="badge bg-primary"><%= event.category %></span></td>
+                <td><%= event.capacity %></td>
+                <td>
+                  <% if (event.ticketsAvailable > 0) { %>
+                    <span class="text-success"><%= event.ticketsAvailable %></span>
+                  <% } else { %>
+                    <span class="text-danger">Sold Out</span>
+                  <% } %>
+                </td>
+                <td>
+                  <!-- Edit Modal Trigger -->
+                  <button
+                    class="btn btn-sm btn-warning me-1"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal<%= event._id %>"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <!-- Delete -->
+                  <form action="/admin/events/delete/<%= event._id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                      onclick="return confirm('Delete this event?')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+
+              <!-- Edit Modal -->
+              <div class="modal fade" id="editModal<%= event._id %>" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                      <h5 class="modal-title">Edit Event</h5>
+                      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/admin/events/update/<%= event._id %>" method="POST">
+                        <div class="row g-3">
+                          <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" class="form-control" value="<%= event.title %>" required>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" value="<%= event.location %>" required>
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label">Date</label>
+                            <input type="datetime-local" name="date" class="form-control" required>
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label">Category</label>
+                            <select name="category" class="form-select" required>
+                              <option value="conference" <%= event.category === 'conference' ? 'selected' : '' %>>Conference</option>
+                              <option value="workshop" <%= event.category === 'workshop' ? 'selected' : '' %>>Workshop</option>
+                              <option value="festival" <%= event.category === 'festival' ? 'selected' : '' %>>Festival</option>
+                              <option value="private" <%= event.category === 'private' ? 'selected' : '' %>>Private</option>
+                            </select>
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" name="capacity" class="form-control" value="<%= event.capacity %>" min="1" required>
+                          </div>
+                          <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3" required><%= event.description %></textarea>
+                          </div>
+                          <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
