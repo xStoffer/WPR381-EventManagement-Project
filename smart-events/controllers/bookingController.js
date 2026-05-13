@@ -11,7 +11,7 @@ const bookTicket = async (req, res) => {
     // Find the event
     const event = await Event.findById(eventId);
     if (!event) {
-      return res.status(404).render('event-detail', {
+      return res.status(404).render('event-details', {
         event: null,
         error: 'Event not found',
         success: null,
@@ -21,7 +21,7 @@ const bookTicket = async (req, res) => {
 
     // Check capacity
     if (tickets > event.ticketsAvailable) {
-      return res.render('event-detail', {
+      return res.render('event-details', {
         event,
         error: `Only ${event.ticketsAvailable} tickets available`,
         success: null,
@@ -94,10 +94,48 @@ const getAdminDashboard = async (req, res) => {
       user: req.session.user
     });
 
+    
+
   } catch (err) {
     console.error(err);
     res.status(500).send('Error loading admin dashboard');
   }
 };
 
-module.exports = { bookTicket, getUserDashboard, getAdminDashboard };
+// Cancel a booking
+const cancelBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    // Make sure this booking belongs to the logged-in user
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      user: req.session.user.id
+    }).populate('event');
+
+    if (!booking) {
+      return res.redirect('/dashboard?error=Booking not found');
+    }
+
+    if (booking.status === 'cancelled') {
+      return res.redirect('/dashboard?error=Booking is already cancelled');
+    }
+
+    // Mark the booking as cancelled
+    booking.status = 'cancelled';
+    await booking.save();
+
+    // Return the tickets to the event
+    await Event.findByIdAndUpdate(booking.event._id, {
+      $inc: { ticketsAvailable: booking.numberOfTickets }
+    });
+
+    res.redirect('/dashboard?success=Booking cancelled successfully');
+
+  } catch (err) {
+    console.error(err);
+    res.redirect('/dashboard?error=Failed to cancel booking');
+  }
+};
+
+module.exports = { bookTicket, getUserDashboard, getAdminDashboard, cancelBooking };

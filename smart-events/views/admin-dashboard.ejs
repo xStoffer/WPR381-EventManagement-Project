@@ -80,7 +80,7 @@
         <% events.forEach(event => { %>
           <%
             const sold = event.capacity - event.ticketsAvailable;
-            const percentage = Math.round((sold / event.capacity) * 100);
+            const percentage = event.capacity > 0 ? Math.round((sold / event.capacity) * 100) : 0;
           %>
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">

@@ -41,7 +41,7 @@ const getEventById = async (req, res) => {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).send('Event not found');
 
-    res.render('event-detail', {
+    res.render('event-details', {
       event,
       user: req.session.user || null,
       error: null,
@@ -98,6 +98,20 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
   try {
     const { title, description, date, location, category, capacity } = req.body;
+    const newCapacity = Number(capacity);
+
+    // Fetch the current event so we can calculate the difference
+    const existingEvent = await Event.findById(req.params.id);
+    if (!existingEvent) {
+      return res.redirect('/admin/events?error=Event not found');
+    }
+
+    // Work out how many tickets have already been booked
+    const ticketsBooked = existingEvent.capacity - existingEvent.ticketsAvailable;
+
+    // New available = new capacity minus already-booked tickets
+    // Math.max(0, ...) prevents it going negative if capacity is reduced below bookings
+    const newTicketsAvailable = Math.max(0, newCapacity - ticketsBooked);
 
     await Event.findByIdAndUpdate(req.params.id, {
       title,
@@ -105,7 +119,8 @@ const updateEvent = async (req, res) => {
       date,
       location,
       category,
-      capacity: Number(capacity)
+      capacity: newCapacity,
+      ticketsAvailable: newTicketsAvailable
     });
 
     res.redirect('/admin/events?success=Event updated successfully');

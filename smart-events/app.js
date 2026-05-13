@@ -4,8 +4,19 @@ const session = require('express-session');
 const cors = require('cors'); //controls the cross-origin resource sharing/requests
 const rateLimit = require('express-rate-limit');//basic Dos protection
 const {errorHandler} = require('./middleware/errorHandler');//centralized error handling
-const logger = require('./middleware/logger');//centralized logging
+const { requestLogger, logger } = require('./middleware/logger');
+const csrf = require('csurf');
 require('dotenv').config(); //load environment variables from .env file
+
+// Guard: fail loudly at startup if critical environment variables are missing
+if (!process.env.MONGO_URI) {
+  console.error('FATAL: MONGO_URI is not set in .env');
+  process.exit(1);
+}
+if (!process.env.SESSION_SECRET) {
+  console.error('FATAL: SESSION_SECRET is not set in .env');
+  process.exit(1);
+}
 
 //Import Models
 require('./models/User');
@@ -38,7 +49,16 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(logger); //Centralized logging, capturing request details and errors in a consistent format for monitoring and debugging
+// CSRF protection — must come after session
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
+// Make the CSRF token available in all EJS views automatically
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+app.use(requestLogger); //Centralized logging, capturing request details and errors in a consistent format for monitoring and debugging
 
 // Routes
 app.use('/auth', authRoutes);

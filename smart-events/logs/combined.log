@@ -1,0 +1,10 @@
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/"},"timestamp":"2026-05-13T19:03:57.301Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/"},"timestamp":"2026-05-13T19:04:09.189Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/favicon.ico"},"timestamp":"2026-05-13T19:04:09.482Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/auth/login"},"timestamp":"2026-05-13T19:04:17.669Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/auth/login"},"timestamp":"2026-05-13T19:06:14.663Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/auth/login"},"timestamp":"2026-05-13T19:06:35.840Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/"},"timestamp":"2026-05-13T19:08:13.799Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/contact"},"timestamp":"2026-05-13T19:10:34.308Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/"},"timestamp":"2026-05-13T19:10:35.472Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/auth/login"},"timestamp":"2026-05-13T19:10:36.286Z"}
