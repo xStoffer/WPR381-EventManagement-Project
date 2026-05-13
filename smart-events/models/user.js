@@ -1,6 +1,8 @@
+// models/user.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+// User schema with validation and password hashing
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,5 +27,6 @@ const userSchema = new mongoose.Schema({
     default: 'user'
   }
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('User', userSchema);

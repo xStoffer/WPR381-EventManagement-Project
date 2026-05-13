@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
 
 // Show login/register page
 const showAuthPage = (req, res) => {
@@ -19,6 +20,16 @@ const register = async (req, res) => {
     if (password !== confirmPassword) {
       return res.render('auth', { 
         error: 'Passwords do not match',
+        success: null,
+        user: null
+      });
+    }
+
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render('auth', { 
+        error: errors.array().map(err => err.msg).join(', '),
         success: null,
         user: null
       });
